@@ -11,7 +11,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪙</text></svg>">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=2.6.0">
 </head>
 <body>
 
@@ -75,7 +75,7 @@
       </h1>
 
       <p class="hero-subtitle">
-        دقیق‌ترین مرجع نرخ‌های لحظه‌ای طلای ۱۸ و ۲۴ عیار، انواع سکه و دلار بازار آزاد همراه با ماشین‌حساب هوشمند تبدیل از ۱۰ سوت تا ۱۰ کیلوگرم.
+        دقیق‌ترین مرجع نرخ‌های لحظه‌ای طلای ۱۸ و ۲۴ عیار، انواع سکه و دلار بازار آزاد همراه با ماشین‌حساب هوشمند تبدیل بدون محدودیت وزنی (از ۱۰ سوت تا هر وزن و تناژ دلخواه).
       </p>
 
       <!-- Quick KPI Strip -->
@@ -122,7 +122,7 @@
         <span class="section-label">VAULT CALCULATOR • ماشین‌حساب هوشمند</span>
         <h2 class="section-title">محاسبه‌گر هوشمند مقادیر و تبدیل ارز</h2>
         <p class="section-desc">
-          مقدار دلخواه طلا (از ۱۰ سوت تا چند کیلوگرم) یا دلار را وارد کنید و واکنش شمش، فاکتور تفکیک‌شده و معادل تومانی را در لحظه مشاهده کنید.
+          مقدار دلخواه طلا (از ۱۰ سوت تا هر وزن و تناژ دلخواه بدون محدودیت) یا دلار را وارد کنید و واکنش شمش، فاکتور تفکیک‌شده و معادل تومانی را در لحظه مشاهده کنید.
         </p>
       </div>
 
@@ -144,17 +144,18 @@
           <!-- Weight & Unit Input -->
           <div class="calc-form-group">
             <div class="form-label">
-              <span>وزن مورد نظر برای محاسبه</span>
-              <span class="form-hint">پشتیبانی از سوت، گرم، مثقال و کیلوگرم</span>
+              <span>وزن مورد نظر برای محاسبه (بدون سقف وزنی)</span>
+              <span class="form-hint">پشتیبانی نامحدود از سوت، گرم، مثقال، کیلوگرم و تُن</span>
             </div>
 
             <div class="input-with-units">
-              <input type="number" id="calc-gold-weight" class="calc-input" value="1" min="0.001" step="any" placeholder="مثلاً: ۱۰">
+              <input type="number" id="calc-gold-weight" class="calc-input" value="1" min="0.001" step="any" placeholder="وزن دلخواه (مثلاً: ۵۰)">
               <select id="calc-gold-unit" class="unit-selector">
                 <option value="soot">سوت (هر ۱۰۰۰ سوت = ۱ گرم)</option>
                 <option value="gram" selected>گرم (استاندارد)</option>
                 <option value="mesghal">مثقال (۴.۶۰۸۳ گرم)</option>
                 <option value="kg">کیلوگرم (شمش بانکی)</option>
+                <option value="ton">تُن (۱۰۰۰ کیلوگرم - تناژ بالا)</option>
                 <option value="ounce">اونس تروا (۳۱.۱۰۳ گرم)</option>
               </select>
             </div>
@@ -171,6 +172,10 @@
               <span class="preset-chip" data-weight="100" data-unit="gram">۱۰۰ گرم</span>
               <span class="preset-chip" data-weight="1" data-unit="kg">۱ کیلوگرم (شمش)</span>
               <span class="preset-chip" data-weight="10" data-unit="kg">۱۰ کیلوگرم</span>
+              <span class="preset-chip" data-weight="25" data-unit="kg">۲۵ کیلوگرم</span>
+              <span class="preset-chip" data-weight="50" data-unit="kg">۵۰ کیلوگرم</span>
+              <span class="preset-chip" data-weight="100" data-unit="kg">۱۰۰ کیلوگرم</span>
+              <span class="preset-chip" data-weight="1" data-unit="ton">۱ تُن (۱۰۰۰ کیلو)</span>
             </div>
 
             <!-- Range Slider -->
@@ -193,7 +198,7 @@
           <div class="accordion-box">
             <div class="accordion-header">
               <span>⚙️ تنظیمات طلافروشی (اجرت، سود طلافروش و مالیات)</span>
-              <span>▼</span>
+              <span class="accordion-arrow">▼</span>
             </div>
             <div class="accordion-content">
               <div class="row-inputs">

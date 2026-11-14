@@ -186,6 +186,7 @@ export const WEIGHT_UNITS = {
   gram: { id: 'gram', name: 'گرم', ratioToGram: 1, desc: 'واحد پایه استاندارد' },
   mesghal: { id: 'mesghal', name: 'مثقال', ratioToGram: 4.6083, desc: 'معادل ۴.۶۰۸۳ گرم' },
   kg: { id: 'kg', name: 'کیلوگرم', ratioToGram: 1000, desc: 'شمش استاندارد بانکی' },
+  ton: { id: 'ton', name: 'تُن (۱۰۰۰ کیلوگرم)', ratioToGram: 1000000, desc: 'تناژ سنگین و شمش‌های عمده' },
   ounce: { id: 'ounce', name: 'اونس تروا', ratioToGram: 31.1034768, desc: 'معیار بازارهای بین‌المللی' }
 };
 
@@ -196,8 +197,16 @@ export function toPersianDigits(n) {
 }
 
 export function formatToman(amount) {
-  if (isNaN(amount)) return '۰';
-  const parts = Math.round(amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '،');
+  if (isNaN(amount) || amount === null || amount === undefined) return '۰';
+  // Use BigInt for massive numbers without scientific notation
+  const rounded = Math.floor(Math.abs(amount));
+  let str = '';
+  try {
+    str = BigInt(rounded).toString();
+  } catch (e) {
+    str = rounded.toString();
+  }
+  const parts = str.replace(/\B(?=(\d{3})+(?!\d))/g, '،');
   return toPersianDigits(parts);
 }
 
@@ -208,20 +217,34 @@ export function formatNumberWithDecimals(val, decimals = 2) {
 }
 
 export function numberToWordsPersian(num) {
-  num = Math.floor(Math.abs(num));
-  if (num === 0) return 'صفر تومان';
+  if (isNaN(num) || num === null || num === undefined) return 'صفر تومان';
+  const absVal = Math.floor(Math.abs(num));
+  if (absVal === 0) return 'صفر تومان';
 
   const yekan = ['', 'یک', 'دو', 'سه', 'چهار', 'پنج', 'شش', 'هفت', 'هشت', 'نه'];
   const dahgan = ['', 'ده', 'بیست', 'سی', 'چهل', 'پنجاه', 'شصت', 'هفتاد', 'هشتاد', 'نود'];
   const dahha = ['ده', 'یازده', 'دوازده', 'سیزده', 'چهارده', 'پانزده', 'شانزده', 'هفده', 'هجده', 'نوزده'];
   const sadgan = ['', 'یکصد', 'دویست', 'سیصد', 'چهارصد', 'پانصد', 'ششصد', 'هفتصد', 'هشتصد', 'نهصد'];
-  const hezar = ['', ' هزار', ' میلیون', ' میلیارد', ' تریلیون'];
+  const hezar = [
+    '',
+    ' هزار',
+    ' میلیون',
+    ' میلیارد',
+    ' تریلیون',
+    ' کوآدریلیون',
+    ' کوئینتیلیون',
+    ' سکستیلیون',
+    ' سپتیلیون',
+    ' اکتیلیون'
+  ];
 
   let result = [];
   let partIdx = 0;
 
-  while (num > 0) {
-    let p = num % 1000;
+  let bigNum = BigInt(absVal);
+
+  while (bigNum > 0n) {
+    let p = Number(bigNum % 1000n);
     if (p > 0) {
       let partWords = [];
       let s = Math.floor(p / 100);
@@ -237,10 +260,11 @@ export function numberToWordsPersian(num) {
         if (y > 0) partWords.push(yekan[y]);
       }
 
-      let subStr = partWords.join(' و ') + hezar[partIdx];
+      const unitWord = partIdx < hezar.length ? hezar[partIdx] : ` × ۱۰^${partIdx * 3}`;
+      let subStr = partWords.join(' و ') + unitWord;
       result.unshift(subStr);
     }
-    num = Math.floor(num / 1000);
+    bigNum = bigNum / 1000n;
     partIdx++;
   }
 

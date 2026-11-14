@@ -415,19 +415,25 @@ class ZarVaArzApp {
     if (weightSlider) {
       weightSlider.addEventListener('input', (e) => {
         const sliderVal = parseFloat(e.target.value);
-        // Exponential slider scale for luxury feel (10 soot up to 10 kg)
-        // val 1 = 10 soot (0.01g), 50 = 10g, 100 = 1000g (1kg)
         let actualWeight = sliderVal;
         if (this.calculator.goldState.unit === 'soot') {
           actualWeight = Math.round(sliderVal * 50); // 10 to 5000 soot
         } else if (this.calculator.goldState.unit === 'gram') {
           actualWeight = Math.round(sliderVal * 10) / 10;
         } else if (this.calculator.goldState.unit === 'kg') {
+          // Dynamic scale: 0.1 kg up to 100 kg
+          actualWeight = sliderVal <= 10 ? (sliderVal / 10).toFixed(2) : Math.round(sliderVal);
+        } else if (this.calculator.goldState.unit === 'ton') {
+          // 0.1 ton up to 10 tons
           actualWeight = (sliderVal / 10).toFixed(2);
+        } else if (this.calculator.goldState.unit === 'mesghal') {
+          actualWeight = (sliderVal / 5).toFixed(1);
+        } else if (this.calculator.goldState.unit === 'ounce') {
+          actualWeight = (sliderVal / 10).toFixed(1);
         }
 
         if (weightInput) weightInput.value = actualWeight;
-        this.calculator.goldState.weight = actualWeight;
+        this.calculator.goldState.weight = parseFloat(actualWeight) || 0;
         this.calculator.calculateGold();
       });
     }
@@ -593,8 +599,17 @@ class ZarVaArzApp {
 
         if (activeMode === 'gold') {
           const res = this.calculator.calculateGold();
+          let weightSpec = `${toPersianDigits(res.weightEntered)} ${res.unit}`;
+          if (res.weightInGrams >= 1000000) {
+            weightSpec += ` (معادل ${toPersianDigits((res.weightInGrams / 1000000).toFixed(2))} تُن / ${formatToman(res.weightInGrams / 1000)} کیلو)`;
+          } else if (res.weightInGrams >= 1000) {
+            weightSpec += ` (معادل ${toPersianDigits((res.weightInGrams / 1000).toFixed(2))} کیلو / ${formatToman(res.weightInGrams)} گرم)`;
+          } else {
+            weightSpec += ` (معادل ${toPersianDigits(res.weightInGrams.toFixed(3))} گرم)`;
+          }
+
           const invoiceText = `🧾 فاکتور محاسبه طلا - زر و ارز\n` +
-            `• وزن: ${toPersianDigits(res.weightEntered)} ${res.unit} (معادل ${toPersianDigits(res.weightInGrams.toFixed(3))} گرم)\n` +
+            `• وزن: ${weightSpec}\n` +
             `• ارزش طلای خام: ${formatToman(res.rawGoldPrice)} تومان\n` +
             `• اجرت ساخت: ${formatToman(res.wageAmount)} تومان\n` +
             `• سود طلافروش: ${formatToman(res.profitAmount)} تومان\n` +
@@ -675,7 +690,17 @@ class ZarVaArzApp {
     if (wageEl) wageEl.innerText = `${formatToman(res.wageAmount)} تومان`;
     if (profitEl) profitEl.innerText = `${formatToman(res.profitAmount)} تومان`;
     if (taxEl) taxEl.innerText = `${formatToman(res.taxAmount)} تومان`;
-    if (gramWeightEl) gramWeightEl.innerText = `${toPersianDigits(res.weightInGrams.toFixed(3))} گرم`;
+    if (gramWeightEl) {
+      if (res.weightInGrams >= 1000000) {
+        const tonVal = (res.weightInGrams / 1000000).toFixed(2);
+        gramWeightEl.innerText = `${toPersianDigits(tonVal)} تُن (${formatToman(res.weightInGrams / 1000)} کیلو)`;
+      } else if (res.weightInGrams >= 1000) {
+        const kgVal = (res.weightInGrams / 1000).toFixed(2);
+        gramWeightEl.innerText = `${toPersianDigits(kgVal)} کیلوگرم (${formatToman(res.weightInGrams)} گرم)`;
+      } else {
+        gramWeightEl.innerText = `${toPersianDigits(res.weightInGrams.toFixed(3))} گرم`;
+      }
+    }
     if (usdEquivEl) usdEquivEl.innerText = `$${res.usdEquivalent.toFixed(2)}`;
   }
 

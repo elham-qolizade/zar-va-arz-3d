@@ -35,10 +35,8 @@ class ZarVaArzApp {
     this.renderHeroKPIs();
     this.renderMarketGrid();
 
-    // 4. Setup 3D Interactive UX (Cursor, Card Tilts & Telemetry Rail)
-    this.setupCustomCursor();
+    // 4. Setup 3D Interactive UX (Card Tilts)
     this.setup3DCardTilt();
-    this.setupTelemetryRail();
 
     // 5. Setup Calculator Listeners
     this.setupCalculator();
@@ -118,7 +116,6 @@ class ZarVaArzApp {
         if (this.scene3d) {
           this.scene3d.setScrollProgress(progress);
         }
-        this.updateTelemetryRail();
       });
     } else {
       window.addEventListener('scroll', () => {
@@ -127,44 +124,8 @@ class ZarVaArzApp {
         if (this.scene3d) {
           this.scene3d.setScrollProgress(progress);
         }
-        this.updateTelemetryRail();
       }, { passive: true });
     }
-  }
-
-  // Custom Luxury Magnetic Cursor
-  setupCustomCursor() {
-    const dot = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    if (!dot || !ring) return;
-
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let ringX = mouseX;
-    let ringY = mouseY;
-
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
-    });
-
-    const updateRing = () => {
-      ringX += (mouseX - ringX) * 0.16;
-      ringY += (mouseY - ringY) * 0.16;
-      ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
-      requestAnimationFrame(updateRing);
-    };
-    updateRing();
-
-    const bindHover = () => {
-      const interactables = 'button, a, input, select, .market-card, .kpi-card, .preset-chip, .rail-item, .filter-tab';
-      document.querySelectorAll(interactables).forEach(el => {
-        el.addEventListener('mouseenter', () => ring.classList.add('active'));
-        el.addEventListener('mouseleave', () => ring.classList.remove('active'));
-      });
-    };
-    bindHover();
   }
 
   // 3D Physical Card Tilt (Perspective Parallax)
@@ -189,44 +150,6 @@ class ZarVaArzApp {
         card.style.setProperty('--tilt-x', '0deg');
         card.style.setProperty('--tilt-y', '0deg');
       });
-    });
-  }
-
-  // Telemetry Section Rail
-  setupTelemetryRail() {
-    const railItems = document.querySelectorAll('.rail-item');
-    railItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const targetId = item.dataset.target;
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          if (this.lenis) {
-            this.lenis.scrollTo(targetEl, { offset: -40, duration: 1.2 });
-          } else {
-            targetEl.scrollIntoView({ behavior: 'smooth' });
-          }
-        }
-      });
-    });
-  }
-
-  updateTelemetryRail() {
-    const sections = ['hero-section', 'market-section', 'calculator-section', 'insights-section'];
-    const railItems = document.querySelectorAll('.rail-item');
-
-    let currentSection = 'hero-section';
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= window.innerHeight * 0.45) {
-          currentSection = id;
-        }
-      }
-    });
-
-    railItems.forEach(item => {
-      item.classList.toggle('active', item.dataset.target === currentSection);
     });
   }
 

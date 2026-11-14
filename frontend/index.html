@@ -15,31 +15,9 @@
 </head>
 <body>
 
-  <!-- Custom Cursor & Cinematic Overlays -->
-  <div class="custom-cursor-dot" id="cursor-dot"></div>
-  <div class="custom-cursor-ring" id="cursor-ring"></div>
+  <!-- Cinematic Ambient Overlays -->
   <div class="cinematic-grain"></div>
   <div class="cyber-vignette"></div>
-
-  <!-- Side Telemetry Rail (Igloo.inc / Active Theory) -->
-  <aside class="telemetry-rail">
-    <div class="rail-item active" data-target="hero-section">
-      <span class="rail-dot"></span>
-      <span class="rail-label">01 // VAULT HERO</span>
-    </div>
-    <div class="rail-item" data-target="market-section">
-      <span class="rail-dot"></span>
-      <span class="rail-label">02 // MARKET PULSE</span>
-    </div>
-    <div class="rail-item" data-target="calculator-section">
-      <span class="rail-dot"></span>
-      <span class="rail-label">03 // 3D VAULT CALC</span>
-    </div>
-    <div class="rail-item" data-target="insights-section">
-      <span class="rail-dot"></span>
-      <span class="rail-label">04 // MARKET DEPTH</span>
-    </div>
-  </aside>
 
   <!-- WebGL 3D Canvas Background -->
   <div id="webgl-container"></div>
@@ -96,10 +74,6 @@
         دقیق‌ترین مرجع نرخ‌های لحظه‌ای طلای ۱۸ و ۲۴ عیار، انواع سکه و دلار بازار آزاد همراه با ماشین‌حساب هوشمند تبدیل از ۱۰ سوت تا ۱۰ کیلوگرم.
       </p>
 
-      <div class="hero-3d-hint font-mono">
-        <span>✦ [برای چرخش ۳۶۰ درجه و بررسی شمش طلا درگ کنید / DRAG TO INSPECT 3D BULLION] ✦</span>
-      </div>
-
       <!-- Quick KPI Strip -->
       <div class="hero-kpis" id="hero-kpi-container">
         <!-- Rendered dynamically via JS -->
@@ -107,9 +81,7 @@
 
       <!-- Scroll Prompt -->
       <div class="scroll-indicator" onclick="document.getElementById('market-section').scrollIntoView({behavior: 'smooth'})">
-        <div class="mouse-icon">
-          <div class="mouse-wheel"></div>
-        </div>
+        <span style="font-size: 18px; color: var(--gold-primary);">↓</span>
         <span>برای کاوش در تالار معاملات اسکرول کنید</span>
       </div>
     </section>

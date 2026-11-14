@@ -502,6 +502,7 @@ a,
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   margin-bottom: 12px;
 }
 
@@ -509,16 +510,32 @@ a,
   font-size: 14px;
   color: var(--text-muted);
   font-weight: 500;
+  min-width: 0;
+  flex: 1;
 }
 
 .kpi-badge {
   font-size: 12px;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.kpi-badge .badge-val {
+  direction: ltr;
+  display: inline-block;
+}
+
+.kpi-badge .badge-arrow {
+  font-size: 10px;
+  line-height: 1;
 }
 
 .badge-up {
@@ -597,6 +614,7 @@ a,
   max-width: 1440px;
   margin: 0 auto;
   position: relative;
+  scroll-margin-top: 75px;
 }
 
 .section-header {
@@ -687,6 +705,7 @@ a,
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 12px;
   margin-bottom: 18px;
 }
 
@@ -694,6 +713,8 @@ a,
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
+  flex: 1;
 }
 
 .card-name {
@@ -881,6 +902,14 @@ a,
   background: var(--gold-gradient);
   color: #07080b;
   box-shadow: 0 4px 20px rgba(245, 192, 66, 0.4);
+}
+
+.tab-label-short {
+  display: none;
+}
+
+.tab-label-full {
+  display: inline;
 }
 
 /* Form Controls */
@@ -1554,11 +1583,44 @@ select.unit-selector:focus,
     border-radius: var(--radius-lg);
   }
   .calc-mode-switch {
-    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    border-radius: var(--radius-full);
+    box-sizing: border-box;
+    margin-bottom: 20px;
   }
   .mode-tab-btn {
-    padding: 10px 12px;
+    width: 100%;
+    justify-content: center;
+    padding: 10px 8px;
     font-size: 13px;
+    gap: 6px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+  .tab-label-full {
+    display: none;
+  }
+  .tab-label-short {
+    display: inline;
+  }
+  .form-label {
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .form-label .form-hint {
+    width: 100%;
+    margin-top: 2px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .calc-result-panel {
+    padding: 20px 16px;
   }
   .purity-pills {
     display: grid;
@@ -1596,12 +1658,32 @@ select.unit-selector:focus,
 
 /* 5. Standard Mobile (<= 540px) */
 @media (max-width: 540px) {
-  .calc-mode-switch {
-    flex-direction: column;
+  .market-card {
+    padding: 18px 16px;
+  }
+  .card-top {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .card-name {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+  .card-en {
+    font-size: 11px;
+  }
+  .card-price {
+    font-size: clamp(24px, 6vw, 30px);
+  }
+  .kpi-badge {
+    font-size: 11px;
+    padding: 2px 7px;
+    gap: 3px;
   }
   .mode-tab-btn {
-    width: 100%;
-    justify-content: center;
+    padding: 9px 4px;
+    font-size: 12px;
+    gap: 4px;
   }
   .input-with-units {
     flex-direction: column;

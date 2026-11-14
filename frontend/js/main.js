@@ -241,7 +241,8 @@ class ZarVaArzApp {
           <div class="kpi-header">
             <span class="kpi-title">${item.name}</span>
             <span class="kpi-badge ${changeClass}">
-              ${toPersianDigits(Math.abs(item.change24h).toFixed(2))}% ${arrow}
+              <span class="badge-val">${toPersianDigits(Math.abs(item.change24h).toFixed(2))}%</span>
+              <span class="badge-arrow">${arrow}</span>
             </span>
           </div>
           <div class="kpi-price">
@@ -315,7 +316,8 @@ class ZarVaArzApp {
                 <span class="card-en">${item.enName}</span>
               </div>
               <span class="kpi-badge ${changeClass}">
-                ${toPersianDigits(Math.abs(item.change24h).toFixed(2))}% ${arrow}
+                <span class="badge-val">${toPersianDigits(Math.abs(item.change24h).toFixed(2))}%</span>
+                <span class="badge-arrow">${arrow}</span>
               </span>
             </div>
 

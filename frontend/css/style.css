@@ -258,6 +258,19 @@ a,
   transition: var(--transition-smooth);
 }
 
+/* Telegram/iOS in-app browsers overlay their own bar, leaving a gap above the
+   sticky header where page content scrolls through. Cover that gap. */
+.hud-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 300px;
+  background: var(--bg-deep);
+  pointer-events: none;
+}
+
 .hud-logo {
   display: flex;
   align-items: center;

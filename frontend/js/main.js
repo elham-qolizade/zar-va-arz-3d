@@ -745,7 +745,7 @@ class ZarVaArzApp {
         await this.loadRatesFromAPI();
         this.simulateMicroFluctuation();
         setTimeout(() => refreshBtn.classList.remove('spinning'), 800);
-        this.showToast('نرخ‌ها از دیتابیس و TGJU با موفقیت همگام‌سازی شدند.');
+        this.showToast('نرخ‌ها با موفقیت همگام‌سازی شدند.');
       });
     }
   }

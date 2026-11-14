@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>زر و ارز | ZAR & ARZ • نبض سه‌بعدی طلا، سکه و ارز</title>
+  <meta name="description" content="سایت مدرن و سه‌بعدی قیمت روز طلا و دلار با ماشین‌حساب هوشمند و تبدیل سوت، گرم و کیلوگرم با افکت‌های WebGL لوکس.">
+  <meta name="theme-color" content="#07080b">
+
+  <!-- Favicon icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪙</text></svg>">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- WebGL 3D Canvas Background -->
+  <div id="webgl-container"></div>
+
+  <!-- App Wrapper -->
+  <div class="app-wrapper">
+
+    <!-- Header HUD -->
+    <header class="hud-header">
+      <a href="#" class="hud-logo">
+        <div class="logo-symbol">Z</div>
+        <div class="logo-text">
+          <span class="logo-brand">زر و ارز</span>
+          <span class="logo-sub">ZAR & ARZ 3D</span>
+        </div>
+      </a>
+
+      <div class="hud-ticker">
+        <span class="ticker-status-dot"></span>
+        <div class="datetime-block iran-datetime" id="hud-iran-datetime" title="تقویم خورشیدی و ساعت رسمی ایران">
+          <span class="flag-icon">🇮🇷</span>
+          <span id="hud-date-shamsi">-- آبان ۱۴۰۵</span>
+          <span class="font-mono text-gold" id="hud-time-tehran">--:--:--</span>
+        </div>
+        <span class="datetime-divider">|</span>
+        <div class="datetime-block global-datetime" id="hud-global-datetime" title="تقویم میلادی و ساعت جهانی UTC">
+          <span class="flag-icon">🌐</span>
+          <span id="hud-date-global" class="font-mono">-- Nov 2026</span>
+          <span class="font-mono text-cyan" id="hud-time-utc">--:--:-- UTC</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <span id="hud-source-badge" class="hud-source-tag" title="مرجع داده‌های بازار">مرجع: TGJU.org</span>
+
+        <button id="btn-sound-toggle" class="btn-hud" title="فعال‌سازی افکت صوتی">
+          <span>🔊</span>
+          <span class="sound-label">صدا: خاموش</span>
+        </button>
+
+        <button id="btn-refresh-rates" class="btn-hud" title="بروزرسانی زنده نرخ‌ها">
+          <span>🔄</span>
+          <span>بروزرسانی</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-tag">
+        <span>✨</span>
+        <span>تجربه تعاملی نسل جدید • الهام‌گرفته از Lusion & Igloo</span>
+      </div>
+
+      <h1 class="hero-title">
+        نبض زنده <span class="gold-gradient-text">طلا و ارز</span>،<br>
+        در ابعاد <span class="cyan-gradient-text">سه‌بعدی و شناور</span>.
+      </h1>
+
+      <p class="hero-subtitle">
+        دقیق‌ترین مرجع نرخ‌های لحظه‌ای طلای ۱۸ و ۲۴ عیار، انواع سکه و دلار بازار آزاد همراه با ماشین‌حساب هوشمند تبدیل از ۱۰ سوت تا ۱۰ کیلوگرم.
+      </p>
+
+      <!-- Quick KPI Strip -->
+      <div class="hero-kpis" id="hero-kpi-container">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Scroll Prompt -->
+      <div class="scroll-indicator" onclick="document.getElementById('market-section').scrollIntoView({behavior: 'smooth'})">
+        <div class="mouse-icon">
+          <div class="mouse-wheel"></div>
+        </div>
+        <span>برای کاوش در تالار معاملات اسکرول کنید</span>
+      </div>
+    </section>
+
+    <!-- Live Market Pulse Section -->
+    <section class="content-section" id="market-section">
+      <div class="section-header">
+        <span class="section-label">MARKET PULSE • نبض زنده بازار</span>
+        <h2 class="section-title">تابلوی جامع نرخ‌های روز</h2>
+        <p class="section-desc">
+          پوشش لحظه‌ای تمامی دارایی‌های کلیدی شامل طلای آبشده، سکه‌های بانکی، دلار، یورو و تتر با نمودار نوسان ۲۴ ساعته.
+        </p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="market-filter-tabs">
+        <button class="filter-tab active" data-filter="all">همه دارایی‌ها</button>
+        <button class="filter-tab" data-filter="gold">طلا و مظنه</button>
+        <button class="filter-tab" data-filter="coins">مسکوکات طلا</button>
+        <button class="filter-tab" data-filter="currency">ارزهای بین‌المللی و تتر</button>
+      </div>
+
+      <!-- Market Grid -->
+      <div class="market-grid" id="market-grid">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- Interactive 3D Calculator Section -->
+    <section class="content-section" id="calculator-section">
+      <div class="section-header">
+        <span class="section-label">3D VAULT CALCULATOR • ماشین‌حساب سه‌بعدی</span>
+        <h2 class="section-title">محاسبه‌گر هوشمند مقادیر و تبدیل ارز</h2>
+        <p class="section-desc">
+          مقدار دلخواه طلا (از ۱۰ سوت تا چند کیلوگرم) یا دلار را وارد کنید و واکنش شمش سه‌بعدی، فاکتور تفکیک‌شده و معادل تومانی را در لحظه مشاهده کنید.
+        </p>
+      </div>
+
+      <div class="calc-container">
+        <!-- Mode Switch Tabs -->
+        <div class="calc-mode-switch">
+          <button class="mode-tab-btn active" data-mode="gold">
+            <span>🪙</span>
+            <span>محاسبه‌گر پیشرفته طلا و شمش</span>
+          </button>
+          <button class="mode-tab-btn" data-mode="currency">
+            <span>💵</span>
+            <span>تبدیل‌گر ارز و دلار</span>
+          </button>
+        </div>
+
+        <!-- Left Form: GOLD MODE -->
+        <div class="calc-form-view" id="calc-gold-view">
+          <!-- Weight & Unit Input -->
+          <div class="calc-form-group">
+            <div class="form-label">
+              <span>وزن مورد نظر برای محاسبه</span>
+              <span class="form-hint">پشتیبانی از سوت، گرم، مثقال و کیلوگرم</span>
+            </div>
+
+            <div class="input-with-units">
+              <input type="number" id="calc-gold-weight" class="calc-input" value="1" min="0.001" step="any" placeholder="مثلاً: ۱۰">
+              <select id="calc-gold-unit" class="unit-selector">
+                <option value="soot">سوت (هر ۱۰۰۰ سوت = ۱ گرم)</option>
+                <option value="gram" selected>گرم (استاندارد)</option>
+                <option value="mesghal">مثقال (۴.۶۰۸۳ گرم)</option>
+                <option value="kg">کیلوگرم (شمش بانکی)</option>
+                <option value="ounce">اونس تروا (۳۱.۱۰۳ گرم)</option>
+              </select>
+            </div>
+
+            <!-- Quick Preset Chips -->
+            <div class="quick-presets">
+              <span class="preset-chip" data-weight="10" data-unit="soot">۱۰ سوت</span>
+              <span class="preset-chip" data-weight="100" data-unit="soot">۱۰۰ سوت</span>
+              <span class="preset-chip" data-weight="500" data-unit="soot">۵۰۰ سوت (نیم گرم)</span>
+              <span class="preset-chip active" data-weight="1" data-unit="gram">۱ گرم</span>
+              <span class="preset-chip" data-weight="5" data-unit="gram">۵ گرم</span>
+              <span class="preset-chip" data-weight="10" data-unit="gram">۱۰ گرم</span>
+              <span class="preset-chip" data-weight="1" data-unit="mesghal">۱ مثقال</span>
+              <span class="preset-chip" data-weight="100" data-unit="gram">۱۰۰ گرم</span>
+              <span class="preset-chip" data-weight="1" data-unit="kg">۱ کیلوگرم (شمش)</span>
+              <span class="preset-chip" data-weight="10" data-unit="kg">۱۰ کیلوگرم</span>
+            </div>
+
+            <!-- Range Slider -->
+            <input type="range" id="calc-weight-slider" class="calc-range-slider" min="1" max="100" value="10">
+          </div>
+
+          <!-- Purity Selection -->
+          <div class="calc-form-group">
+            <div class="form-label">
+              <span>نوع و عیار طلا</span>
+            </div>
+            <div class="purity-pills">
+              <button class="purity-pill-btn active" data-purity="18k">طلای ۱۸ عیار (۷۵۰)</button>
+              <button class="purity-pill-btn" data-purity="24k">طلای ۲۴ عیار (شمش ۹۹۹)</button>
+              <button class="purity-pill-btn" data-purity="melted">طلای آبشده (مظنه)</button>
+            </div>
+          </div>
+
+          <!-- Jeweler Settings Accordion -->
+          <div class="accordion-box">
+            <div class="accordion-header">
+              <span>⚙️ تنظیمات طلافروشی (اجرت، سود طلافروش و مالیات)</span>
+              <span>▼</span>
+            </div>
+            <div class="accordion-content">
+              <div class="row-inputs">
+                <div>
+                  <label class="form-label" style="font-size: 12px; margin-bottom: 6px;">اجرت ساخت (درصد)</label>
+                  <input type="number" id="calc-wage-val" class="mini-input" value="0" min="0" max="40" placeholder="مثلاً: ۷">
+                </div>
+                <div>
+                  <label class="form-label" style="font-size: 12px; margin-bottom: 6px;">سود طلافروش (قانونی ۷٪)</label>
+                  <input type="number" id="calc-profit-val" class="mini-input" value="7" min="0" max="25" placeholder="۷">
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+                <input type="checkbox" id="calc-tax-check" checked style="accent-color: var(--gold-primary); width: 18px; height: 18px; cursor: pointer;">
+                <label for="calc-tax-check" style="font-size: 13px; color: var(--text-muted); cursor: pointer;">
+                  محاسبه مالیات بر ارزش افزوده (۹٪ قانون جدید — فقط بر روی اجرت و سود طلافروش)
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Left Form: CURRENCY MODE (Hidden by default) -->
+        <div class="calc-form-view" id="calc-currency-view" style="display: none;">
+          <div class="calc-form-group">
+            <div class="form-label">
+              <span>مبلغ مورد نظر برای تبدیل</span>
+              <button id="calc-curr-direction-btn" class="btn-hud" style="padding: 4px 12px; font-size: 12px;">
+                <span>⇄</span>
+                <span>تغییر جهت تبدیل</span>
+              </button>
+            </div>
+
+            <div class="input-with-units">
+              <input type="number" id="calc-curr-amount" class="calc-input" value="100" min="1" step="any">
+              <select id="calc-curr-select" class="unit-selector">
+                <option value="usd" selected>دلار آمریکا (USD $)</option>
+                <option value="eur">یورو اروپا (EUR €)</option>
+                <option value="aed">درهم امارات (AED د.إ)</option>
+                <option value="usdt">تتر دیجیتال (USDT ₮)</option>
+              </select>
+            </div>
+
+            <!-- Currency Presets -->
+            <div class="quick-presets">
+              <span class="preset-chip curr-preset-chip" data-amount="50">$۵۰</span>
+              <span class="preset-chip curr-preset-chip" data-amount="100">$۱۰۰</span>
+              <span class="preset-chip curr-preset-chip" data-amount="500">$۵۰۰</span>
+              <span class="preset-chip curr-preset-chip" data-amount="1000">$۱،۰۰۰</span>
+              <span class="preset-chip curr-preset-chip" data-amount="5000">$۵،۰۰۰</span>
+              <span class="preset-chip curr-preset-chip" data-amount="10000">$۱۰،۰۰۰</span>
+            </div>
+
+            <!-- Custom Rate Override Field -->
+            <div style="margin-top: 18px; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
+              <div class="form-label" style="font-size: 13px; margin-bottom: 6px;">
+                <span>نرخ معاملاتی مبنا (تومان):</span>
+                <span class="form-hint" id="calc-curr-live-hint">قابل ویرایش دستی</span>
+              </div>
+              <input type="number" id="calc-curr-custom-rate" class="mini-input" style="font-size: 16px; font-weight: 700; color: var(--gold-primary);" placeholder="نرخ دلخواه را وارد کنید">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Result Viewport -->
+        <div class="calc-result-panel">
+          <div>
+            <div class="result-badge">
+              <span>🟢</span>
+              <span id="calc-badge-text">محاسبه آنی بر اساس نرخ لحظه‌ای بازار</span>
+            </div>
+
+            <!-- Total Price Display -->
+            <div class="result-display-primary">
+              <div class="result-total-label" id="calc-total-label">مبلغ نهایی تمام‌شده:</div>
+              <div class="result-big-number">
+                <span id="calc-result-total" class="gold-gradient-text">۰</span>
+                <span id="calc-result-unit" class="result-currency-unit">تومان</span>
+              </div>
+              <div id="calc-result-words" class="result-words">
+                صفر تومان
+              </div>
+            </div>
+
+            <!-- Detailed Breakdown for Gold -->
+            <div class="result-breakdown-list" id="gold-breakdown-container">
+              <div class="breakdown-item">
+                <span class="breakdown-label">وزن معادل خالص به گرم:</span>
+                <span id="gold-breakdown-gram-weight" class="breakdown-val">۱.۰۰۰ گرم</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">ارزش طلای خام:</span>
+                <span id="gold-breakdown-raw" class="breakdown-val">۰ تومان</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">مبلغ اجرت ساخت:</span>
+                <span id="gold-breakdown-wage" class="breakdown-val">۰ تومان</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">سود قانونی طلافروش (۷٪):</span>
+                <span id="gold-breakdown-profit" class="breakdown-val">۰ تومان</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">مالیات بر ارزش افزوده (۹٪):</span>
+                <span id="gold-breakdown-tax" class="breakdown-val">۰ تومان</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">معادل دلاری (USD):</span>
+                <span id="gold-breakdown-usd" class="breakdown-val font-mono">$0.00</span>
+              </div>
+            </div>
+
+            <!-- Detailed Breakdown for Currency -->
+            <div class="result-breakdown-list" id="currency-breakdown-container" style="display: none;">
+              <div class="breakdown-item">
+                <span class="breakdown-label">نرخ مبنای محاسبه:</span>
+                <span id="curr-breakdown-rate" class="breakdown-val">۰ تومان</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">مبلغ ورودی:</span>
+                <span id="curr-breakdown-input" class="breakdown-val">۱۰۰ $</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">معادل به ریال:</span>
+                <span id="curr-breakdown-rial" class="breakdown-val">۰ ریال</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="breakdown-label">نوع ارز:</span>
+                <span id="curr-breakdown-name" class="breakdown-val">دلار آمریکا</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="calc-action-bar">
+            <button id="btn-copy-invoice" class="btn-primary-gold">
+              <span>📋</span>
+              <span id="btn-copy-label">کپی فاکتور رسمی و شفاف</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Market Depth, Coin Bubble & Formulas Section -->
+    <section class="content-section">
+      <div class="section-header">
+        <span class="section-label">MARKET INSIGHTS • رازهای بازار طلا</span>
+        <h2 class="section-title">فرمول‌ها و تحلیل حباب سکه</h2>
+        <p class="section-desc">
+          دانش تخصصی برای خرید و فروش هوشمندانه طلا و سکه بدون پرداخت هزینه‌های اضافی.
+        </p>
+      </div>
+
+      <div class="insights-grid">
+        <!-- Coin Bubble Analysis -->
+        <div class="insight-card">
+          <div class="insight-icon">⚖️</div>
+          <h3 class="insight-title">حباب سکه چیست؟</h3>
+          <p class="insight-body">
+            حباب سکه به اختلاف بین ارزش طلای خام به کار رفته در سکه (بر اساس انس جهانی و عیار ۹۰۰) با قیمت معامله‌شده آن در بازار به دلیل تقاضا و هیجان خرید گفته می‌شود.
+          </p>
+          <div class="bubble-meter">
+            <div class="bubble-stat-row">
+              <span style="color: var(--text-muted);">حباب سکه امامی امروز:</span>
+              <span style="color: var(--accent-red); font-weight: 800;">۸،۴۵۰،۰۰۰ تومان (۱۶.۱٪)</span>
+            </div>
+            <div class="bubble-stat-row">
+              <span style="color: var(--text-muted);">حباب ربع سکه:</span>
+              <span style="color: var(--accent-red); font-weight: 800;">۶،۶۰۰،۰۰۰ تومان (۳۷.۵٪)</span>
+            </div>
+            <div class="range-track" style="margin-top: 10px;">
+              <div class="range-fill" style="width: 60%; background: linear-gradient(90deg, #00f090, #ff385c);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Formula -->
+        <div class="insight-card">
+          <div class="insight-icon">📐</div>
+          <h3 class="insight-title">فرمول رسمی محاسبه طلا</h3>
+          <p class="insight-body">
+            فرمول استاندارد مصوب اتحادیه طلا و جواهر برای خرید طلای زینتی:
+          </p>
+          <div style="background: rgba(0,0,0,0.4); padding: 14px; border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 13px; color: var(--gold-light); margin: 14px 0; border: 1px dashed var(--border-gold); direction: ltr;">
+            Total = (Raw Gold + Wage) × 1.07 [Profit] + (Wage + Profit) × 0.09 [VAT]
+          </div>
+          <p class="insight-body" style="font-size: 13px;">
+            نکته مهم: طبق قانون مصوب دی‌ماه ۱۴۰۰، اصل طلا از مالیات معاف است و مالیات ۹٪ تنها به مجموع اجرت و سود طلافروش تعلق می‌گیرد.
+          </p>
+        </div>
+
+        <!-- Traditional vs Modern Weights Table -->
+        <div class="insight-card">
+          <div class="insight-icon">📏</div>
+          <h3 class="insight-title">جدول مقیاس‌های وزن طلا</h3>
+          <p class="insight-body">
+            تناسب واحدهای قدیمی بازار زرگران ایران با واحدهای بین‌المللی:
+          </p>
+          <table class="weights-table">
+            <thead>
+              <tr>
+                <th>واحد سنتی</th>
+                <th>معادل به گرم</th>
+                <th>کاربرد</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>۱ سوت</td>
+                <td>۰.۰۰۱ گرم</td>
+                <td>وزن نگین و خرده طلا</td>
+              </tr>
+              <tr>
+                <td>۱ نخود</td>
+                <td>۰.۱۹۲ گرم</td>
+                <td>محاسبات قدیمی</td>
+              </tr>
+              <tr>
+                <td>۱ مثقال طلا</td>
+                <td>۴.۶۰۸۳ گرم</td>
+                <td>مظنه بازار تهران</td>
+              </tr>
+              <tr>
+                <td>۱ اونس تروا</td>
+                <td>۳۱.۱۰۳۵ گرم</td>
+                <td>معیار انس جهانی</td>
+              </tr>
+              <tr>
+                <td>۱ کیلوگرم</td>
+                <td>۱۰۰۰ گرم</td>
+                <td>شمش‌های استاندارد</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div>
+          <div class="hud-logo" style="margin-bottom: 12px;">
+            <div class="logo-symbol">Z</div>
+            <div class="logo-text">
+              <span class="logo-brand">زر و ارز</span>
+              <span class="logo-sub">ZAR & ARZ 3D</span>
+            </div>
+          </div>
+          <p class="footer-disclaimer">
+            طراحی شده با تلفیق هنر بصری سه‌بعدی و داده‌های مالی بی‌درنگ. تمام محاسبات ماشین‌حساب بر اساس استانداردهای رسمی اتحادیه طلا و جواهر و قوانین مالیاتی کشور اجرا می‌شود.
+          </p>
+        </div>
+
+        <div class="footer-meta">
+          <span>نسخه ۲.۴.۰ لوکس</span>
+          <span>•</span>
+          <span>پشتیبانی از WebGL 2.0</span>
+          <span>•</span>
+          <span class="gold-gradient-text font-mono">Awwwards Inspired</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Main Application Script (ESM) -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

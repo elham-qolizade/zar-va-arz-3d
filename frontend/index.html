@@ -15,6 +15,32 @@
 </head>
 <body>
 
+  <!-- Custom Cursor & Cinematic Overlays -->
+  <div class="custom-cursor-dot" id="cursor-dot"></div>
+  <div class="custom-cursor-ring" id="cursor-ring"></div>
+  <div class="cinematic-grain"></div>
+  <div class="cyber-vignette"></div>
+
+  <!-- Side Telemetry Rail (Igloo.inc / Active Theory) -->
+  <aside class="telemetry-rail">
+    <div class="rail-item active" data-target="hero-section">
+      <span class="rail-dot"></span>
+      <span class="rail-label">01 // VAULT HERO</span>
+    </div>
+    <div class="rail-item" data-target="market-section">
+      <span class="rail-dot"></span>
+      <span class="rail-label">02 // MARKET PULSE</span>
+    </div>
+    <div class="rail-item" data-target="calculator-section">
+      <span class="rail-dot"></span>
+      <span class="rail-label">03 // 3D VAULT CALC</span>
+    </div>
+    <div class="rail-item" data-target="insights-section">
+      <span class="rail-dot"></span>
+      <span class="rail-label">04 // MARKET DEPTH</span>
+    </div>
+  </aside>
+
   <!-- WebGL 3D Canvas Background -->
   <div id="webgl-container"></div>
 
@@ -47,8 +73,6 @@
       </div>
 
       <div class="hud-actions">
-        <span id="hud-source-badge" class="hud-source-tag" title="مرجع داده‌های بازار">مرجع: TGJU.org</span>
-
         <button id="btn-sound-toggle" class="btn-hud" title="فعال‌سازی افکت صوتی">
           <span>🔊</span>
           <span class="sound-label">صدا: خاموش</span>
@@ -62,7 +86,15 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section" id="hero-section">
+      <div class="hero-telemetry-badge font-mono">
+        <span>[LATENCY: 4ms]</span>
+        <span>•</span>
+        <span>[ENGINE: THREE.JS PBR]</span>
+        <span>•</span>
+        <span>[ORBITAL SYNC: ACTIVE]</span>
+      </div>
+
       <h1 class="hero-title">
         نبض زنده <span class="gold-gradient-text">طلا و ارز</span>،<br>
         در ابعاد <span class="cyan-gradient-text">سه‌بعدی و شناور</span>.
@@ -71,6 +103,10 @@
       <p class="hero-subtitle">
         دقیق‌ترین مرجع نرخ‌های لحظه‌ای طلای ۱۸ و ۲۴ عیار، انواع سکه و دلار بازار آزاد همراه با ماشین‌حساب هوشمند تبدیل از ۱۰ سوت تا ۱۰ کیلوگرم.
       </p>
+
+      <div class="hero-3d-hint font-mono">
+        <span>✦ [برای چرخش ۳۶۰ درجه و بررسی شمش طلا درگ کنید / DRAG TO INSPECT 3D BULLION] ✦</span>
+      </div>
 
       <!-- Quick KPI Strip -->
       <div class="hero-kpis" id="hero-kpi-container">
@@ -334,7 +370,7 @@
     </section>
 
     <!-- Market Depth, Coin Bubble & Formulas Section -->
-    <section class="content-section">
+    <section class="content-section" id="insights-section">
       <div class="section-header">
         <span class="section-label">MARKET INSIGHTS • رازهای بازار طلا</span>
         <h2 class="section-title">فرمول‌ها و تحلیل حباب سکه</h2>
@@ -455,6 +491,11 @@
     </footer>
 
   </div>
+
+  <!-- Smooth Scrolling & Animation Libraries -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <!-- Main Application Script (ESM) -->
   <script type="module" src="js/main.js"></script>

@@ -69,9 +69,155 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
+/* ==========================================================================
+   LENIS SMOOTH SCROLL INTEGRATION
+   ========================================================================== */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   CUSTOM LUXURY MAGNETIC CURSOR
+   ========================================================================== */
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--gold-primary);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 0 12px var(--gold-primary);
+}
+
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(245, 192, 66, 0.45);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+.custom-cursor-ring.active {
+  width: 58px;
+  height: 58px;
+  border-color: var(--accent-cyan);
+  background: rgba(77, 240, 255, 0.08);
+}
+
+/* ==========================================================================
+   CINEMATIC FILM GRAIN & VIGNETTE OVERLAY (Active Theory / Lusion Aesthetic)
+   ========================================================================== */
+.cinematic-grain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.cyber-vignette {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 60%, rgba(3, 4, 6, 0.75) 100%);
+}
+
+/* ==========================================================================
+   SIDE TELEMETRY HUD RAIL (Igloo & Active Theory Section Markers)
+   ========================================================================== */
+.telemetry-rail {
+  position: fixed;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.rail-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+}
+
+.rail-dot {
   width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: var(--transition-smooth);
+}
+
+.rail-label {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: var(--transition-smooth);
+  white-space: nowrap;
+}
+
+.rail-item:hover .rail-label, .rail-item.active .rail-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.rail-item.active {
+  color: var(--gold-primary);
+}
+
+.rail-item.active .rail-dot {
+  background: var(--gold-primary);
+  box-shadow: 0 0 10px var(--gold-primary);
+  transform: scale(1.6);
+}
+
+/* 3D Interactive Card Tilt (Perspective Parallax) */
+.market-card, .kpi-card, .calc-container {
+  transform-style: preserve-3d;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.market-card:hover {
+  transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateZ(12px);
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-deep);
@@ -91,8 +237,12 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 0;
-  pointer-events: none;
+  z-index: 1;
+  pointer-events: auto;
+  cursor: grab;
+}
+#webgl-container:active {
+  cursor: grabbing;
 }
 
 /* Foreground UI Container */
@@ -100,6 +250,62 @@ body {
   position: relative;
   z-index: 10;
   width: 100%;
+  pointer-events: none;
+}
+
+.hud-header, 
+.hero-kpis, 
+.scroll-indicator, 
+.content-section, 
+.app-footer, 
+.telemetry-rail, 
+button, 
+input, 
+select, 
+a, 
+.market-card, 
+.calc-container, 
+.insight-card,
+.hero-telemetry-badge,
+.hero-3d-hint {
+  pointer-events: auto;
+}
+
+.hero-telemetry-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border-gold);
+  color: var(--gold-primary);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  margin-bottom: 24px;
+  backdrop-filter: var(--blur-glass);
+  box-shadow: 0 0 24px rgba(245, 192, 66, 0.15);
+}
+
+.hero-3d-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(77, 240, 255, 0.08);
+  border: 1px solid rgba(77, 240, 255, 0.25);
+  border-radius: var(--radius-full);
+  color: var(--accent-cyan);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  margin-top: 14px;
+  margin-bottom: 36px;
+  animation: pulseBorder 3s infinite;
+}
+
+@keyframes pulseBorder {
+  0%, 100% { border-color: rgba(77, 240, 255, 0.25); box-shadow: 0 0 0 rgba(77, 240, 255, 0); }
+  50% { border-color: rgba(245, 192, 66, 0.6); box-shadow: 0 0 20px rgba(245, 192, 66, 0.25); }
 }
 
 /* Typography Utility */
@@ -318,13 +524,13 @@ body {
 }
 
 .hero-title {
-  font-size: clamp(40px, 6.5vw, 84px);
+  font-size: clamp(48px, 7.5vw, 96px);
   font-weight: 900;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  margin-bottom: 24px;
-  max-width: 900px;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 20px;
+  max-width: 950px;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8), 0 0 50px rgba(245, 192, 66, 0.18);
 }
 
 .hero-subtitle {

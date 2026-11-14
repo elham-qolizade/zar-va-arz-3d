@@ -28,30 +28,35 @@ class ZarVaArzApp {
       console.warn('WebGL initialization skipped or failed:', e);
     }
 
-    // 2. Setup Scroll Tracking for 3D Camera & Parallax
+    // 2. Setup Scroll Tracking for 3D Camera, Lenis & Parallax
     this.setupScrollSync();
 
     // 3. Render Hero KPIs & Market Grid
     this.renderHeroKPIs();
     this.renderMarketGrid();
 
-    // 4. Setup Calculator Listeners
+    // 4. Setup 3D Interactive UX (Cursor, Card Tilts & Telemetry Rail)
+    this.setupCustomCursor();
+    this.setup3DCardTilt();
+    this.setupTelemetryRail();
+
+    // 5. Setup Calculator Listeners
     this.setupCalculator();
 
-    // 5. Setup Market Filter Tabs
+    // 6. Setup Market Filter Tabs
     this.setupFilters();
 
-    // 6. Setup Audio & HUD Controls
+    // 7. Setup Audio & HUD Controls
     this.setupHUD();
 
-    // 7. Setup Live Clock & Simulated Market Pulse
+    // 8. Setup Live Clock & Simulated Market Pulse
     this.startClock();
     this.startMarketFluctuation();
 
-    // 8. Load Real Data from SQLite Backend & TGJU
+    // 9. Load Real Data from SQLite Backend & TGJU
     this.loadRatesFromAPI();
 
-    // 9. Initial Calculator Run
+    // 10. Initial Calculator Run
     this.calculator.calculateGold();
     this.calculator.calculateCurrency();
   }
@@ -67,12 +72,7 @@ class ZarVaArzApp {
           this.calculator.setRates(this.rates);
           this.renderHeroKPIs();
           this.renderMarketGrid();
-
-          const sourceBadge = document.getElementById('hud-source-badge');
-          if (sourceBadge) {
-            sourceBadge.innerText = 'دیتابیس SQLite • TGJU';
-            sourceBadge.classList.add('synced');
-          }
+          this.setup3DCardTilt();
           return;
         }
       }
@@ -90,27 +90,144 @@ class ZarVaArzApp {
           this.calculator.setRates(this.rates);
           this.renderHeroKPIs();
           this.renderMarketGrid();
+          this.setup3DCardTilt();
         }
       }
     } catch (e) {}
   }
 
-  // Smooth scroll sync with 3D camera
+  // Smooth scroll sync with 3D camera & Lenis Smooth Scroll Engine
   setupScrollSync() {
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-          const progress = docHeight > 0 ? (window.scrollY / docHeight) : 0;
-          if (this.scene3d) {
-            this.scene3d.setScrollProgress(progress);
+    if (typeof window.Lenis !== 'undefined') {
+      this.lenis = new window.Lenis({
+        duration: 1.3,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        wheelMultiplier: 1.05
+      });
+
+      const raf = (time) => {
+        this.lenis.raf(time);
+        requestAnimationFrame(raf);
+      };
+      requestAnimationFrame(raf);
+
+      this.lenis.on('scroll', (e) => {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (e.scroll / docHeight) : 0;
+        if (this.scene3d) {
+          this.scene3d.setScrollProgress(progress);
+        }
+        this.updateTelemetryRail();
+      });
+    } else {
+      window.addEventListener('scroll', () => {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (window.scrollY / docHeight) : 0;
+        if (this.scene3d) {
+          this.scene3d.setScrollProgress(progress);
+        }
+        this.updateTelemetryRail();
+      }, { passive: true });
+    }
+  }
+
+  // Custom Luxury Magnetic Cursor
+  setupCustomCursor() {
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    if (!dot || !ring) return;
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+    });
+
+    const updateRing = () => {
+      ringX += (mouseX - ringX) * 0.16;
+      ringY += (mouseY - ringY) * 0.16;
+      ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
+      requestAnimationFrame(updateRing);
+    };
+    updateRing();
+
+    const bindHover = () => {
+      const interactables = 'button, a, input, select, .market-card, .kpi-card, .preset-chip, .rail-item, .filter-tab';
+      document.querySelectorAll(interactables).forEach(el => {
+        el.addEventListener('mouseenter', () => ring.classList.add('active'));
+        el.addEventListener('mouseleave', () => ring.classList.remove('active'));
+      });
+    };
+    bindHover();
+  }
+
+  // 3D Physical Card Tilt (Perspective Parallax)
+  setup3DCardTilt() {
+    const cards = document.querySelectorAll('.market-card, .kpi-card, .calc-container, .insight-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const tiltX = ((y - centerY) / centerY) * -7;
+        const tiltY = ((x - centerX) / centerX) * 7;
+
+        card.style.setProperty('--tilt-x', `${tiltX.toFixed(2)}deg`);
+        card.style.setProperty('--tilt-y', `${tiltY.toFixed(2)}deg`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--tilt-x', '0deg');
+        card.style.setProperty('--tilt-y', '0deg');
+      });
+    });
+  }
+
+  // Telemetry Section Rail
+  setupTelemetryRail() {
+    const railItems = document.querySelectorAll('.rail-item');
+    railItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const targetId = item.dataset.target;
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          if (this.lenis) {
+            this.lenis.scrollTo(targetEl, { offset: -40, duration: 1.2 });
+          } else {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
           }
-          ticking = false;
-        });
-        ticking = true;
+        }
+      });
+    });
+  }
+
+  updateTelemetryRail() {
+    const sections = ['hero-section', 'market-section', 'calculator-section', 'insights-section'];
+    const railItems = document.querySelectorAll('.rail-item');
+
+    let currentSection = 'hero-section';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.45) {
+          currentSection = id;
+        }
       }
-    }, { passive: true });
+    });
+
+    railItems.forEach(item => {
+      item.classList.toggle('active', item.dataset.target === currentSection);
+    });
   }
 
   // Render Hero Quick KPI Strip
@@ -264,6 +381,8 @@ class ZarVaArzApp {
         this.showToast(`نرخ ${formatToman(val)} تومان کپی شد.`);
       });
     });
+
+    this.setup3DCardTilt();
   }
 
   // Quick select an asset from market grid directly into calculator

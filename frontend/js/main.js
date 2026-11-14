@@ -107,12 +107,24 @@ class ZarVaArzApp {
 
   // Smooth scroll sync with 3D camera & Lenis Smooth Scroll Engine
   setupScrollSync() {
-    if (typeof window.Lenis !== 'undefined') {
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 1024);
+
+    // Cached document height to prevent layout thrashing on scroll
+    let docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const updateDocHeight = () => {
+      docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    };
+    window.addEventListener('resize', updateDocHeight, { passive: true });
+
+    if (!isTouch && typeof window.Lenis !== 'undefined') {
+      // Snappy and agile Lenis for desktop mouse wheel
       this.lenis = new window.Lenis({
-        duration: 1.3,
+        duration: 0.75,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
-        wheelMultiplier: 1.05
+        smoothTouch: false,
+        syncTouch: false,
+        wheelMultiplier: 1.0
       });
 
       const raf = (time) => {
@@ -122,25 +134,37 @@ class ZarVaArzApp {
       requestAnimationFrame(raf);
 
       this.lenis.on('scroll', (e) => {
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docHeight > 0 ? (e.scroll / docHeight) : 0;
+        const progress = Math.min(1, Math.max(0, e.scroll / docHeight));
         if (this.scene3d) {
           this.scene3d.setScrollProgress(progress);
         }
       });
     } else {
-      window.addEventListener('scroll', () => {
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docHeight > 0 ? (window.scrollY / docHeight) : 0;
-        if (this.scene3d) {
-          this.scene3d.setScrollProgress(progress);
+      // 100% Native High-Performance Touch & Mobile Scrolling
+      let ticking = false;
+      const onNativeScroll = () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            const scrollY = window.scrollY || window.pageYOffset;
+            const progress = Math.min(1, Math.max(0, scrollY / docHeight));
+            if (this.scene3d) {
+              this.scene3d.setScrollProgress(progress);
+            }
+            ticking = false;
+          });
+          ticking = true;
         }
-      }, { passive: true });
+      };
+
+      window.addEventListener('scroll', onNativeScroll, { passive: true });
     }
   }
 
   // Custom Luxury Circular Cursor (Replaces default OS mouse)
   setupCustomCursor() {
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 1024);
+    if (isTouch) return;
+
     const dot = document.getElementById('cursor-dot');
     const ring = document.getElementById('cursor-ring');
     if (!dot || !ring) return;
@@ -173,6 +197,9 @@ class ZarVaArzApp {
 
   // 3D Physical Card Tilt (Perspective Parallax)
   setup3DCardTilt() {
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 1024);
+    if (isTouch) return;
+
     const cards = document.querySelectorAll('.market-card, .kpi-card, .calc-container, .insight-card');
     cards.forEach(card => {
       card.addEventListener('mousemove', (e) => {

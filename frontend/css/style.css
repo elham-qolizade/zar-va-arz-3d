@@ -55,8 +55,8 @@ html {
   direction: rtl;
   background-color: var(--bg-deep);
   color: var(--text-main);
-  scroll-behavior: smooth;
   overflow-x: clip;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -1410,6 +1410,9 @@ select.unit-selector:focus,
   .custom-cursor-ring {
     display: none !important;
   }
+  .cinematic-grain {
+    display: none !important;
+  }
 }
 
 /* 2. Laptops & Small Desktops (<= 1200px) */
@@ -1476,6 +1479,18 @@ select.unit-selector:focus,
   }
   .btn-hud .sound-label {
     display: none; /* Compact sound toggle */
+  }
+  .cinematic-grain {
+    display: none !important;
+  }
+  .market-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(14, 16, 24, 0.94);
+  }
+  .kpi-card {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   .hero-section {
     min-height: auto;

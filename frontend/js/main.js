@@ -21,6 +21,16 @@ class ZarVaArzApp {
   }
 
   init() {
+    // 0. Telegram In-App Browser & WebApp Expansion
+    if (window.Telegram && window.Telegram.WebApp) {
+      try {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+      } catch (e) {
+        console.warn('Telegram WebApp setup notice:', e);
+      }
+    }
+
     // 1. Initialize 3D Engine
     try {
       this.scene3d = new Scene3D('webgl-container');
